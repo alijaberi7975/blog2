@@ -1,0 +1,181 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Article</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .menu-container {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border-right: 1px solid #ccc;
+            display: flex;
+            border-radius: 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            color: white;
+            transition: width 0.5s; /* اضافه کردن انیمیشن به تغییرات */
+        }
+
+        .menu-container:hover {
+            width: 250px; /* افزایش عرض هنگام هوور */
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            border-radius: 5px;
+        {#background-color: #475248;#} color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #45a049;
+        }
+
+
+        .add-article-form {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            padding: 50px 50px 50px 50px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            color: white;
+            max-width: 1000px;
+            max-height: 450px;
+            margin: auto;
+
+            overflow-y: auto; /* فعال کردن اسکرول */
+            max-height: calc(80vh - 100px); /* تنظیم حداکثر ارتفاع برای اسکرول */
+            margin-top: 1px;
+            افزایش فاصله بالا برای بهتر دیده شدن
+        }
+
+        .add-article-form-content {
+            max-width: 600px; /* حداکثر عرض محتوا برای اطمینان از خوانایی */
+            margin: auto;
+        }
+
+        .add-article-form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .add-article-form input,
+        .add-article-form textarea,
+        .add-article-form button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            background: #475248;
+            color: white;
+            transition: background 0.3s ease;
+        }
+
+        .add-article-form input:focus,
+        .add-article-form textarea:focus {
+            outline: none;
+            background: #556859;
+        }
+
+        .add-article-form button {
+            background-color: #008CBA;
+            cursor: pointer;
+        }
+
+        .add-article-form button:hover {
+            background-color: #00688B;
+        }
+
+        .form-control {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold;
+            font-size: 17px;
+            color: black;
+        }
+    </style>
+</head>
+<body dir="rtl">
+<div class="menu-container">
+    <a href="{% url 'account:profile' %}" class="menu-item">پروفایل</a>
+    <a href="{% url 'account:user_article_list' %}" class="menu-item">مقالات من</a>
+    <a href="{% url 'account:add_article' %}" class="menu-item">افزودن مقاله</a>
+    <a href="{% url 'account:EssayWriter' %}" class="menu-item">درخواست مقاله نویسی</a>
+    <a href="{% url 'article:home' %}" class="menu-item">صفحه اصلی</a>
+    <a href="{% url 'account:logout' %}" class="menu-item">خروج</a>
+</div>
+
+<div class="add-article-form">
+
+    {% if request.user.is_writer %}
+        <h2>فرم ویرایش مقاله</h2>
+        {{ form.errors }}
+        <form id="addArticleForm" dir="rtl" action="{% url 'account:edit_article' article.id %}" method="post"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+            <label>عنوان مقاله :</label>
+            {{ form.title }}
+            <hr>
+            <label>دسته بندی مقاله :</label>
+            <br>
+            {{ form.category }}
+            <hr>
+            <label>متن مقاله :</label>
+            {{ form.body }}
+            <hr>
+            <label>تصویر مقاله :</label>
+            <br>
+            {% if article.image %}
+                <img style="height: 250px; width: 400px; border-radius: 10px;" src=" {{ article.image.url }} ">
+                <br>
+            {% endif %}
+            {{ form.image }}
+            <hr>
+            <button type="submit">ذخیره تغییرات</button>
+        </form>
+    {% else %}
+        <p>
+            برای افزودن مقاله ابتدا باید از منوی پنل کاربری خود درخواست مقاله نویسی بدهید
+        </p>
+        <br>
+        <p>
+            اگر قبلا این درخواست را داده اید منتظر باشید تا توسط ادمین سایت بررسی و پذیرش شود بعد از آن میتوانید مقالات
+            خود را در سایت اضافه کنید
+        </p>
+    {% endif %}
+</div>
+</body>
+</html>

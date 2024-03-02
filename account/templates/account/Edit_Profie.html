@@ -1,0 +1,152 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .menu-container {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border-right: 1px solid #ccc;
+            display: flex;
+            border-radius: 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            color: white;
+            transition: width 0.5s; /* اضافه کردن انیمیشن به تغییرات */
+        }
+
+        .menu-container:hover {
+            width: 250px; /* افزایش عرض هنگام هوور */
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            border-radius: 5px;
+        {#background-color: #475248;#} color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #45a049;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: row; /* تغییر به جهت افقی برای قرار گرفتن دو فرم در یک راستا */
+            align-items: flex-start; /* قرار دادن در ابتدای محور عمودی */
+            justify-content: center;
+            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 70vh;
+        }
+
+        .form-container {
+            text-align: center;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            color: white;
+        }
+
+        h2 {
+            color: white;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label, input {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .submit-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: #5cb85c;
+            color: #fff;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #4cae4c;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body dir="rtl">
+
+<div class="menu-container">
+    <a href="{% url 'account:profile' %}" class="menu-item">پروفایل</a>
+    <a href="{% url 'account:user_article_list' %}" class="menu-item">مقالات من</a>
+    <a href="{% url 'account:add_article' %}" class="menu-item">افزودن مقاله</a>
+    <a href="{% url 'account:favorite_article' %}" class="menu-item">مقالات مورد علاقه</a>
+    <a href="{% url 'account:EssayWriter' %}" class="menu-item">درخواست مقاله نویسی</a>
+    <a href="{% url 'article:home' %}" class="menu-item">صفحه اصلی</a>
+    <a href="{% url 'account:logout' %}" class="menu-item">خروج</a>
+</div>
+
+<div class="content" dir="auto">
+    <div class="form-container">
+        <h2>ویرایش اطلاعات کاربری</h2>
+        <form action="{% url 'account:edit_profile' user.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="username">نام کاربری:</label>
+            {#            <input type="text" id="username" name="username" value="{{ user.username }}" required>#}
+            {{ form.full_name }}
+            <hr style="width: 300px">
+            <label for="username">تصویر نمایه:</label>
+            {% if  request.user.image %}
+                <img style="height: 50px; width: 50px; border-radius: 50%" src="{{ request.user.image.url }}"
+                     alt="عکس پروفایل">
+            {% endif %}
+            {{ form.image }}
+            <button type="submit" class="submit-button">ذخیره تغییرات</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

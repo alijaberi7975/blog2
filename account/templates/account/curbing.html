@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>هشدار</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .content {
+            display: flex;
+            flex-direction: row; /* تغییر به جهت افقی برای قرار گرفتن دو فرم در یک راستا */
+            align-items: flex-start; /* قرار دادن در ابتدای محور عمودی */
+            justify-content: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            color: white;
+            margin: auto;
+        }
+
+        h2 {
+            color: white;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .edit-button {
+            background-color: #2b542c;
+            padding: 4px 4px 4px 4px;
+            border-radius: 5px;
+            margin-right: 470px;
+            color: white;
+        }
+    </style>
+</head>
+<body dir="rtl">
+<div class="content">
+    <div class="form-container" style="height: 200px;">
+        <h1 style="margin-bottom: 100px ">کاربر عزیز شما امکان دسترسی به این مقاله را ندارید</h1>
+        <a href="{% url 'article:home' %}" class="edit-button">بازگشت به خانه</a>
+    </div>
+</div>
+</body>
+</html>

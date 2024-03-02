@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Articles</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .menu-container {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border-right: 1px solid #ccc;
+            display: flex;
+            border-radius: 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            color: white;
+            transition: width 0.5s; /* اضافه کردن انیمیشن به تغییرات */
+        }
+
+        .menu-container:hover {
+            width: 250px; /* افزایش عرض هنگام هوور */
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            border-radius: 5px;
+        {#background-color: #475248;#} color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #45a049;
+        }
+
+        .articles-list {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            color: white;
+            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 70vh; /* Set a maximum height for the list */
+            display: flex;
+            flex-wrap: wrap; /* Allow articles to wrap to the next line */
+            gap: 20px;
+        }
+
+        .article-container {
+            width: calc(33.33% - 20px); /* 33.33% of the container width, minus the gap */
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .article-item {
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .article-item:hover {
+            transform: scale(1.05);
+        }
+
+        .article-image {
+            width: 100%;
+            max-height: 200px; /* تعیین حداکثر ارتفاع برای تصویر مقاله */
+            object-fit: cover;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .article-info {
+            padding: 15px;
+            background-color: #333;
+        }
+
+        article-title {
+            margin-top: 10px;
+            font-size: 20px; /* افزایش اندازه فونت عنوان مقاله */
+            font-weight: bold;
+            color: white;
+            line-height: 1.3; /* تعیین فاصله بین خطوط عنوان */
+        }
+
+        .article-buttons {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column; /* نمایش دکمه‌ها در ستون */
+        }
+
+        .view-button, .edit-button {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'YourCustomFont', Tahoma, Arial, sans-serif;
+            font-size: 14px;
+            color: rgb(۲, ۳, ۳);
+            background-color: #dccece;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .view-button:hover, .edit-button:hover {
+            background-color: #586a9d;
+            color: #020101;
+        }
+
+        .article-info {
+            position: relative;
+        }
+
+        .article-title {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            z-index: 2;
+        }
+
+        .article-buttons {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            z-index: 2;
+        }
+
+        .view-button, .edit-button {
+            /* ... existing styles ... */
+            display: block; /* Display buttons as block elements */
+            margin-top: 5px; /* Adjust margin for better spacing */
+        }
+    </style>
+</head>
+<body dir="rtl">
+<div class="menu-container">
+    <a href="{% url 'account:profile' %}" class="menu-item">پروفایل</a>
+    <a href="{% url 'account:user_article_list' %}" class="menu-item">مقالات من</a>
+    <a href="{% url 'account:add_article' %}" class="menu-item">افزودن مقاله</a>
+    <a href="{% url 'account:favorite_article' %}" class="menu-item">مقالات مورد علاقه</a>
+    <a href="{% url 'account:EssayWriter' %}" class="menu-item">درخواست مقاله نویسی</a>
+    <a href="{% url 'article:home' %}" class="menu-item">صفحه اصلی</a>
+    <a href="{% url 'account:logout' %}" class="menu-item">خروج</a>
+</div>
+
+<div class="articles-list">
+    {% if favorite_articles %}
+        {% for favorite_article in favorite_articles %}
+            <div class="article-item">
+                {% if favorite_article.article.image %}
+                    <img src="{{ favorite_article.article.image.url }}" alt="Article Image" class="article-image">
+                {% else %}
+                    <img src="" alt="Article Image" class="article-image">
+                {% endif %}
+                <div class="article-info">
+                    <p class="article-title">{{ favorite_article.article.title }}</p>
+                    <div class="article-buttons">
+                        <a href="{% url 'article:post' favorite_article.article.slug %}" class="view-button">مشاهده</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+    {% else %}
+        <p>
+            برای مشاهده لیست مقالات مورد علاقه ابتدا از مقاله های در سایت مقاله های های که مورد علاقه شماست را اضافه کنید
+        </p>
+    {% endif %}
+</div>
+
+</body>
+</html>

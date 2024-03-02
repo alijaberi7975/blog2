@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Submission Form</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .menu-container {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border-right: 1px solid #ccc;
+            display: flex;
+            border-radius: 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            color: white;
+            transition: width 0.5s; /* اضافه کردن انیمیشن به تغییرات */
+        }
+
+        .menu-container:hover {
+            width: 250px; /* افزایش عرض هنگام هوور */
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            border-radius: 5px;
+            {#background-color: #475248;#}
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #45a049;
+        }
+
+        .submission-form {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            padding: 60px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 60%;
+            margin: auto;
+            height: 355px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        .submit-button {
+            background-color: #008CBA;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #00709e;
+        }
+    </style>
+</head>
+<body dir="rtl">
+<div class="menu-container">
+    <a href="{% url 'account:profile' %}" class="menu-item">پروفایل</a>
+    <a href="{% url 'account:user_article_list' %}" class="menu-item">مقالات من</a>
+    <a href="{% url 'account:add_article' %}" class="menu-item">افزودن مقاله</a>
+    <a href="{% url 'account:favorite_article' %}" class="menu-item">مقالات مورد علاقه</a>
+    <a href="{% url 'account:EssayWriter' %}" class="menu-item">درخواست مقاله نویسی</a>
+    <a href="{% url 'article:home' %}" class="menu-item">صفحه اصلی</a>
+    <a href="{% url 'account:logout' %}" class="menu-item">خروج</a>
+</div>
+<div class="submission-form">
+
+    {% if not request.user.is_writer %}
+        <h2>فرم درخواست مقاله نویسی</h2>
+        <form action="{% url 'account:EssayWriter' %}" method="post">
+            {% csrf_token %}
+            <textarea name="request" class="form-input" placeholder="متن درخواست" rows="6" required></textarea>
+            <button type="submit" class="submit-button">ارسال درخواست</button>
+            <div>
+                {{ massage }}
+            </div>
+        </form>
+    {% else %}
+        <p>
+            شما قبلا این درخواست را ارسال کرده اید و اگر مورد پذیرش شده باشد میتوانید مقالات خود را در سایت اضافه کنید
+        </p>
+    {% endif %}
+</div>
+</body>
+</html>

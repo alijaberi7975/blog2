@@ -1,0 +1,61 @@
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                منو <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="index.html"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="font-size: 20px;">
+            <ul class="nav navbar-nav navbar-right">
+                {% if not request.user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'account:login' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">ورود
+                            به حساب کاربری</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'account:register' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">ثبت
+                            نام</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'article:home' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">خانه</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'article:posts' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">مقالات</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'article:about' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">درباره</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'article:contact' %}"
+                           style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;font-size: 20px; font-weight: bold;">تماس
+                            با ما</a>
+                    </li>
+                    <div class="dropdown">
+                        <span style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif; font-weight: bold;">{{ request.user.full_name}}</span>
+                        <div class="dropdown-content">
+                            <a style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;  font-weight: bold;" href="{% url 'account:profile' %}" class="dropdown-item">پنل کاربری</a>
+{#                            <a href="{% url 'account:user_article_list' %}" class="dropdown-item"> مقالات من </a>#}
+{#                            <a href="{% url 'account:add_article' %}" class="dropdown-item">افزودن مقاله</a>#}
+                            <a style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif;  font-weight: bold;" href="{% url 'account:logout' %}" class="dropdown-item">خروج</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>

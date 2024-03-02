@@ -1,0 +1,324 @@
+{% load static %}
+{% load jalali_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Clean Blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Theme CSS -->
+    <link href="{% static 'css/clean-blog.min.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
+    <style>
+        body {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+            border: black solid 1px;
+            border-radius: 5px;
+        }
+
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 5px 10px; /* کاهش اندازه padding */
+            margin: 0 2px; /* کاهش اندازه margin */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #555;
+            cursor: pointer; /* افزودن این خط برای نشان دادن نشانگر دست */
+            font-size: 14px; /* کوچکتر کردن اندازه فونت */
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .active {
+            background-color: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination .disabled {
+            pointer-events: none; /* غیرفعال کردن دکمه‌های غیرقابل کلیک */
+            color: #ddd; /* رنگ متن غیرفعال شده */
+            cursor: not-allowed; /* تغییر نشانگر دست به نشانگر غیرفعال */
+        }
+
+        .col-lg-8.col-md-10 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .col-lg-4.col-md-4.col-sm-6 {
+            margin-bottom: 20px; /* اصلاح فاصله بین کادرها */
+        }
+
+        .thumbnail {
+            border: none; /* حذف حاشیه کادر */
+        }
+
+        .list-group {
+            margin-top: 20px;
+        }
+
+        .list-group-item {
+            border: none;
+            padding: 10px 15px;
+            font-size: 18px;
+            text-align: right;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f8f8;
+        }
+
+        .list-group-item a {
+            color: #333;
+            text-decoration: none;
+        }
+
+        .list-group-item a:hover {
+            color: #007bff;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin: 20px;
+            color: white; /* رنگ متن اصلی */
+            font-weight: bold; /* تنظیم وزن فونت */
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #333;
+            transition: color 0.3s ease; /* افزودن انیمیشن رنگ */
+        }
+
+        .dropdown-item:hover {
+            background-color: #ddd;
+            color: #008CBA; /* تنظیم رنگ متن هنگام هاور */
+        }
+
+        .caption h4 {
+            font-size: 16px; /* اندازه فونت کوچکتر برای عنوان مقاله */
+            margin: 10px 0 5px; /* حاشیه برای جلوگیری از چسبیدن به متن پایینی */
+        }
+
+        .popular-articles {
+            padding-left: 150px; /* یا هر فاصله‌ای که نیاز دارید */
+        }
+
+        /* در فایل CSS خود */
+        .popular-articles-container {
+            padding-left: 150px; /* یا هر فاصله‌ای که نیاز دارید */
+        }
+
+    </style>
+</head>
+
+<body>
+
+{% include 'include/navbar.html' %}
+
+<!-- Page Header -->
+<header class="intro-header" style="background-image: url('{% static 'img/books.jpg' %}')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="site-heading">
+                    <h1>مقالات</h1>
+                    <hr class="small">
+                    <span class="subheading"
+                          style="font-family: 'B Nazanin', Tahoma, Arial, sans-serif; font-weight: bold;">اینجا هر چی میخوای هست </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container" dir="rtl">
+    <div class="row">
+        <div class="col-lg-8 col-md-10">
+            {% if not posts %}
+                <p style="font-size: 30px;">متاسفانه مقاله‌ای پیدا نشد.</p>
+            {% else %}
+                <div class="row">
+                    {% for post in posts %}
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="thumbnail">
+                                <a href="{% url 'article:post' post.slug %}">
+                                    {% if post.image %}
+                                        <img style="border-radius: 10px" src="{{ post.image.url }}"
+                                             alt="{{ post.title }}" class="img-responsive">
+                                    {% endif %}
+                                    <div class="caption">
+                                        <h3>{{ post.title }}</h3>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                            </div>
+                            <div class="row"> {# Start a new row every 3 articles #}
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <span class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </span>
+                        <span class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </span>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num > page_obj.number|add:"-2" and num < page_obj.number|add:"3" %}
+                            <span class="page-item {% if num == page_obj.number %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </span>
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <span class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </span>
+                        <span class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4 col-md-2">
+            <h2>جستجو</h2>
+            <form method="get" action="{% url 'article:search' %}">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="جستجو..." name="q">
+                    <span class="input-group-btn">
+                        <button style="border-radius: 5px; margin-right: 3px" class="btn btn-default"
+                                type="submit">برو!</button>
+                    </span>
+                </div>
+            </form>
+            <hr>
+            <h2>دسته‌بندی‌ها</h2>
+            <ul class="list-group">
+                {% for category in categories %}
+                    <li class="list-group-item">
+                        <a href="{% url 'article:category_detail' category.slug %}">{{ category.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <h2>محبوب‌ترین مقالات</h2>
+            <br>
+            {% for article in popular_posts %}
+                <div class="thumbnail" style="padding-left: 150px; margin-bottom: 1px">
+                    <a href="{% url 'article:post' article.slug %}">
+                        {% if article.image %}
+                            <img style="width: 180px; border-radius: 10px" src="{{ article.image.url }}"
+                                 alt="{{ article.title }}" class="img-responsive">
+                        {% endif %}
+                        <div class="caption">
+                            <h4>{{ article.title }}</h4>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                {#                <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>#}
+            </div>
+        </div>
+    </div>
+</footer>
+<script>
+    document.querySelector('form').addEventListener('submit', function (e) {
+        var searchField = this.querySelector('input[name="q"]');
+        if (searchField.value.trim() === '') {
+            e.preventDefault();
+            alert('لطفاً عنوان مقاله را برای جستجو وارد کنید.');
+        }
+    });
+
+</script>
+<!-- jQuery -->
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+<!-- Contact Form JavaScript -->
+<script src="{% static 'js/jqBootstrapValidation.js' %}"></script>
+<script src="{% static 'js/contact_me.js' %}"></script>
+
+<!-- Theme JavaScript -->
+<script src="{% static 'js/clean-blog.min.js' %}"></script>
+
+</body>
+</html>

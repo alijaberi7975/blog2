@@ -1,0 +1,234 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'BNazanin';
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'BNazanin', sans-serif;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-image: url('{% static 'img/home-bg.jpg' %}'); /* تصویر پس‌زمینه بلور */
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff; /* رنگ متن */
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.5); /* پس‌زمینه شفاف برای محدوده داخلی فرم */
+            padding: 40px; /* افزایش پدینگ برای بخش شیشه‌ای فرم */
+            border-radius: 10px; /* گوشه‌های گرد */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* افکت شیشه‌ای */
+        }
+
+        h2 {
+            color: #fff; /* رنگ عنوان فرم */
+        }
+
+        form {
+            text-align: right;
+        }
+
+        label {
+            color: #fff; /* رنگ برچسب‌ها */
+        }
+
+        input,
+        button {
+            direction: rtl;
+            margin-bottom: 10px;
+        }
+
+        button {
+            margin-top: 10px;
+        }
+
+        /* سبک دکمه‌ها */
+        .btn-primary,
+        .btn-link {
+            color: #fff;
+            background-color: #475665;
+            border-color: #404f5e;
+        }
+
+        .btn-primary:hover,
+        .btn-link:hover {
+            color: #fff;
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        /* افزودن استایل برای دکمه ورود وسط فرم */
+        .center-btn {
+            text-align: center;
+        }
+
+        /* استایل نوار قدرت پسورد */
+        .password-strength-meter {
+            margin-top: 10px;
+            height: 7px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .strength-weak {
+            background-color: #d9534f; /* قدرت ضعیف: قرمز */
+        }
+
+        .strength-medium {
+            background-color: #f0ad4e; /* قدرت متوسط: نارنجی */
+        }
+
+        .strength-strong {
+            background-color: #5bc0de; /* قدرت قوی: آبی */
+        }
+    </style>
+    <title>فرم ورود</title>
+</head>
+
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">ثبت نام</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="non-field-errors">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <ul>
+                                {% for err in form.non_field_errors %}
+                                    <li>{{ err }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="non-field-errors">
+                    {% for err in form.email.errors %}
+                        <div class="alert alert-danger">
+                            <p>{{ err }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="non-field-errors">
+                    {% for err in form.password.errors %}
+                        <div class="alert alert-danger">
+                            <p>{{ err }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="email">:ایمیل</label>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    <label for="email">:نام کاربری</label>
+                    {{ form.full_name }}
+                </div>
+                <div class="form-group">
+                    <label for="password">:رمز عبور</label>
+                    {{ form.password }}
+                    <!-- نوار قدرت پسورد -->
+                    <div class="password-strength-meter">
+                        <div class="password-strength-bar strength-weak"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">:تکرار رمز عبور</label>
+                    {{ form.re_password }}
+                </div>
+                <div class="center-btn">
+                    <button type="submit" class="btn btn-primary">ایجاد حساب کاربری</button>
+                </div>
+                <div class="text-center">
+                    <a href="{% url 'account:login' %}" class="btn btn-link">ورود به حساب کاربری</a>
+                    <a href="{% url 'article:home' %}" class="btn btn-link">بازگشت به صفحه اصلی </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- اسکریپت‌ها -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // تابع برای ارزیابی قدرت پسورد و به‌روزرسانی نوار قدرت
+        function updatePasswordStrength(password) {
+            var strength = 0;
+
+            // بررسی طول پسورد
+            if (password.length >= 8) {
+                strength += 1;
+            }
+
+            // بررسی وجود حروف کوچک و بزرگ
+            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) {
+                strength += 1;
+            }
+
+            // بررسی وجود اعداد
+            if (password.match(/([0-9])/)) {
+                strength += 1;
+            }
+
+            // بررسی وجود حروف خاص یا نشانه‌ها
+            if (password.match(/([!, @, #, $, %, ^, &, *])/)) {
+                strength += 1;
+            }
+
+            // به‌روزرسانی رنگ پسورد بر اساس قدرت
+            var passwordInput = $('#id_password');
+            var passwordStrengthBar = $('.password-strength-bar');
+
+            if (password.length === 0) {
+                passwordInput.removeClass('strength-weak strength-medium strength-strong').css('border-color', '');
+                passwordStrengthBar.css('background-color', '').css('width', '0');
+            } else if (strength === 1) {
+                passwordInput.removeClass('strength-medium strength-strong').addClass('strength-weak').css('border-color', '#d9534f');
+                passwordStrengthBar.css('background-color', '#d9534f').css('width', '33%');
+            } else if (strength === 2) {
+                passwordInput.removeClass('strength-weak strength-strong').addClass('strength-medium').css('border-color', '#f0ad4e');
+                passwordStrengthBar.css('background-color', '#f0ad4e').css('width', '66%');
+            } else if (strength === 3 || strength === 4) {
+                passwordInput.removeClass('strength-weak strength-medium').addClass('strength-strong').css('border-color', '#5bc0de');
+                passwordStrengthBar.css('background-color', '#5bc0de').css('width', '100%');
+            }
+        }
+
+        // افزودن رویداد ورود داده به فیلد پسورد
+        $('#id_password').on('input', function () {
+            var password = $(this).val();
+
+            // به‌روزرسانی رنگ پسورد
+            updatePasswordStrength(password);
+        });
+    });
+</script>
+
+
+</body>
+
+</html>

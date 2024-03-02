@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold; /* ضخامت فونت (Bold) */
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 100px;
+            display: flex;
+            height: 70vh;
+            font-weight: bold; /* افزودن ویژگی بولد به فونت */
+        }
+
+        .menu-container {
+            width: 200px;
+            background: rgba(0, 0, 0, 0.7);
+            border-right: 1px solid #ccc;
+            display: flex;
+            border-radius: 10px;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            font-weight: bold;
+            font-size: 18px;
+            margin-left: 10px;
+            color: white;
+            transition: width 0.5s; /* اضافه کردن انیمیشن به تغییرات */
+        }
+
+        .menu-container:hover {
+            width: 250px; /* افزایش عرض هنگام هوور */
+        }
+
+        .menu-item {
+            margin-bottom: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            padding: 5px;
+            border-radius: 5px;
+            {#background-color: #475248;#}
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: #45a049;
+        }
+
+
+        .profile-container {
+            flex: 1;
+            color: white;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5); /* پس‌زمینه شفاف برای محدوده داخلی فرم */
+            padding: 40px; /* افزایش پدینگ برای بخش شیشه‌ای فرم */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* افکت شیشه‌ای */
+        }
+
+        .profile-image {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .edit-button, .save-button {
+            background-color: #4d774d;
+            color: white;
+            padding: 5px 10px; /* کاهش اندازه دکمه */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-left: 10px;
+            float: left; /* منتقل کردن به چپ */
+        }
+
+        .edit-form {
+            display: none;
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .edit-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .save-button {
+            background-color: #008CBA;
+        }
+    </style>
+</head>
+<body dir="rtl">
+<div class="menu-container">
+    <a href="{% url 'account:profile' %}" class="menu-item">پروفایل</a>
+    <a href="{% url 'account:user_article_list' %}" class="menu-item">مقالات من</a>
+    <a href="{% url 'account:add_article' %}" class="menu-item">افزودن مقاله</a>
+    <a href="{% url 'account:favorite_article' %}" class="menu-item">مقالات مورد علاقه</a>
+    <a href="{% url 'account:EssayWriter' %}" class="menu-item">درخواست مقاله نویسی</a>
+    <a href="{% url 'article:home' %}" class="menu-item">صفحه اصلی</a>
+    <a href="{% url 'account:logout' %}" class="menu-item">خروج</a>
+</div>
+
+<div class="profile-container">
+    {% if user.image %}
+        <img src="{{ user.image.url }}" alt="Profile Image" class="profile-image">
+    {% else %}
+        <img src="{% static 'img/profile.jpg' %}" alt="Profile Image" class="profile-image">
+    {% endif %}
+    <h2>نام کاربری: {{ user.full_name }}</h2>
+    <p>ایمیل: {{ user.email }}</p>
+    {#    <p dir="rtl">تاریخ تولد: 01/01/1990</p>#}
+    <a href="{% url 'account:edit_profile' user.id %}" class="edit-button">ویرایش اطلاعات</a>
+    <a href="{% url 'account:change_password' %}" class="edit-button">تغییر گذرواژه</a>
+
+</div>
+</body>
+</html>

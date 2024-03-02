@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Article Confirmation</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirmation-form {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            color: white;
+            width: 80%; /* Adjust the width as needed */
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            color: #ffffff;
+        }
+
+        .confirmation-buttons {
+            margin-top: 20px;
+        }
+
+        .confirm-button, .cancel-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .confirm-button {
+            background-color: #5cb85c;
+            color: #fff;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+        }
+
+        .cancel-button {
+            background-color: #d9534f;
+            color: #fff;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+        }
+
+        {#.confirm-button:hover, .cancel-button:hover {#}
+        {#    background-color: #4cae4c;#}
+        {
+        #}#}
+    </style>
+</head>
+<body>
+
+<div class="confirmation-form">
+    <h2>😢 تائیدیه حذف مقاله 😢</h2>
+    <p> آیا از حذف این مقاله {{ article.title }} اطمینان دارید؟</p>
+
+    {% if article.image %}
+        <img style="height: 140px; width: 200px; border-radius: 10px;" src=" {{ article.image.url }} ">
+        <br>
+    {% endif %}
+    <form id="deleteForm" action="{% url 'account:delete_article' article.id %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="article_id" value="{{ article.id }}">
+        <div class="confirmation-buttons">
+            <button type="submit" name="confirm" class="confirm-button">بله</button>
+            <button type="submit" name="cancel" class="cancel-button">خیر</button>
+        </div>
+    </form>
+
+</div>
+</body>
+</html>
