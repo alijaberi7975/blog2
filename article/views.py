@@ -1,6 +1,7 @@
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views import View
 from django.views.generic import FormView, ListView, TemplateView
 from .form import Contact, CommentForm
@@ -36,7 +37,7 @@ class Post(View):
             else:
                 return redirect('article:home')
         else:
-            return redirect('account:login')
+            return redirect(reverse('account:login') + f"?next={reverse('article:post', args=[slug])}")
 
     def post(self, request, slug):
         form = CommentForm(request.POST)

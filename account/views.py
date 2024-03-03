@@ -21,7 +21,8 @@ class LoginView(View):
     def get(self, request):
         if request.user.is_authenticated:
             return redirect('article:home')
-        return render(request, "account/login.html", {'error_message': None})
+        next_page = request.GET.get('next', '')
+        return render(request, "account/login.html", {'error_message': None, 'next_page': next_page})
 
     def post(self, request):
         email = request.POST['email']
@@ -29,7 +30,8 @@ class LoginView(View):
         user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('article:home')
+            next_page = request.GET.get('next', '')
+            return redirect(next_page or 'article:home')
         else:
             return render(request, "account/login.html", {'error_message': 'ایمیل یا رمز عبور اشتباه است'})
 
@@ -154,19 +156,18 @@ class EditArticle(LoginRequiredMixin, View):
         else:
             return render(request, 'account/curbing.html')
 
-
-def post(self, request, pk):
-    article = get_object_or_404(Article, id=pk)
-    form = EditArticleForm(request.POST, request.FILES, instance=article)
-    if form.is_valid():
-        article = form.save(commit=False)
-        article.save()
-        form.save()
-        form.save_m2m()
-        return redirect('account:user_article_list')
-    else:
+    def post(self, request, pk):
+        article = get_object_or_404(Article, id=pk)
         form = EditArticleForm(request.POST, request.FILES, instance=article)
-        return render(request, 'account/Edir_Article.html', {'form': form, 'article': article})
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.save()
+            form.save()
+            form.save_m2m()
+            return redirect('account:user_article_list')
+        else:
+            form = EditArticleForm(request.POST, request.FILES, instance=article)
+            return render(request, 'account/Edir_Article.html', {'form': form, 'article': article})
 
 
 # ---------------------------------------------------------------------------------
@@ -180,15 +181,14 @@ class DeleteArticle(LoginRequiredMixin, View):
         else:
             return render(request, 'account/curbing.html')
 
-
-def post(self, request, pk):
-    article = Article.objects.get(id=pk)
-    if 'confirm' in request.POST:
-        article.delete()
+    def post(self, request, pk):
+        article = Article.objects.get(id=pk)
+        if 'confirm' in request.POST:
+            article.delete()
+            return redirect('account:user_article_list')
+        elif 'cancel' in request.POST:
+            return redirect('account:user_article_list')
         return redirect('account:user_article_list')
-    elif 'cancel' in request.POST:
-        return redirect('account:user_article_list')
-    return redirect('account:user_article_list')
 
 
 # -------------------------------------------------------------------
