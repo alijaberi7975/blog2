@@ -32,6 +32,7 @@ class LoginView(View):
             login(request, user)
             next_page = request.GET.get('next', '')
             return redirect(next_page or 'article:home')
+
         else:
             return render(request, "account/login.html", {'error_message': 'ایمیل یا رمز عبور اشتباه است'})
 
