@@ -1,3 +1,6 @@
+import random
+import string
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,8 +13,11 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
 from account.form import RegisterForm, AddArticleForm, EditProfileForm, EditArticleForm
-from account.models import User, RequestAnArticle
+from account.models import User, RequestAnArticle, VerificationCode
 from article.models import Article, FavoriteArticle
+import uuid
+from django.utils import timezone
+from django.core.mail import send_mail
 
 
 # -----------------------------------------------------------------------------
@@ -63,6 +69,15 @@ class RegisterView(View):
             full_name = form.cleaned_data.get('full_name')
             password = form.cleaned_data.get('password')
             User.objects.create_user(email=email, full_name=full_name, password=password)
+            # ارسال ایمیل خوشامدگویی
+            subject = 'خوش امد گویی به blog2'
+            message = f"کاربر عزیز {full_name} به وبسایت ما خوش اومدی " \
+                      f"اگر این ایمیل را دریافت کردی یعنی ثبت نام شما در سایت موفقیت امیز بوده و شما میتوانید با واردن شدن به حساب کاربری خود از امکانات سایت بهرمند بشید و به جدیدترین مقالات روز دنیا دسترسی داشته باشید " \
+                      f"همچنین اگر شما در علاقه مند نوشتن مقالات هستید میتوانید از پروفایل کاربری خود درخواست مقاله نویسی بدهید تا کارشناسان ما بعد از بررسی درخواست شما دسترسی مقاله نوشتن را به شما بدهند " \
+                      f"ممنون که ما را انتخاب کردید موفق باشد"
+            from_email = 'alijaberi279@gmail.com'  # آدرس ایمیل خود را وارد کنید
+            to_email = email
+            send_mail(subject, message, from_email, [to_email], fail_silently=False)
             return redirect('account:login')
         else:
             return render(request, "account/Register.html", context={"form": form})
@@ -232,3 +247,58 @@ class EssayWriterForm(LoginRequiredMixin, View):
             return render(request, 'account/Essay_writer_form.html', {'massage': massage})
         massage = 'متن درخواست را پر کنید'
         return render(request, 'account/Essay_writer_form.html', {'massage': massage})
+
+
+# ------------------------------------------------
+
+
+class DeleteAccount(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        user = request.user
+        return render(request, 'account/Delete_User.html', {'user': user})
+
+    def post(self, request, pk):
+        user = User.objects.get(id=pk)
+
+        if 'confirm' in request.POST:
+            # تولید یک کد یکتا با استفاده از uuid
+            verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+            # ایجاد توکن 20 کاراکتری یکتا
+            token = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
+
+            # حذف کدهای قدیمی‌تر از دیتابیس
+            VerificationCode.objects.filter(expiration_time__lt=timezone.now()).delete()
+
+            # ذخیره کد و توکن در مدل VerificationCode
+            expiration_time = timezone.now() + timezone.timedelta(minutes=2)
+            verification_obj = VerificationCode(user=user, code=verification_code, expiration_time=expiration_time,
+                                                token=token)
+            verification_obj.save()
+
+            # ارسال کد تأیید و توکن از طریق ایمیل
+            subject = 'کد تأیید حذف حساب کاربری'
+            message = f'کاربر گرامی، کد تائیدیه حذف حساب کاربری شما: {verification_code}'
+            from_email = 'alijaberi279@gmail.com'  # آدرس ایمیل خود را وارد کنید
+            to_email = user.email
+            send_mail(subject, message, from_email, [to_email], fail_silently=False)
+
+            massage = "کد تایید را به ایمیل شما ارسال کردیم لطفا در هنگام انجام عملیات صفحه را رفرش نکید"
+            return render(request, 'account/Confrim_Delete_User.html',
+                          {'user': user, 'token': token, "massage": massage})
+
+        elif 'remove' in request.POST:
+            user = request.user
+            code = code = request.POST.get('verification_code')
+            verification = VerificationCode.objects.filter(user=request.user, token=request.POST.get('token')).first()
+            if code == verification.code:
+                user.delete()
+                verification.delete()
+                return redirect('article:home')
+            else:
+                massage = "کد وارد شده اشتباه است "
+                return render(request, 'account/Confrim_Delete_User.html',
+                              {'user': user, 'token': verification.token, "massage": massage})
+        elif 'cancel' in request.POST:
+            return redirect("account:profile")
+        return redirect("account:profile")

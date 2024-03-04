@@ -50,8 +50,7 @@
             display: block;
             padding: 5px;
             border-radius: 5px;
-            {#background-color: #475248;#}
-            color: white;
+        {#background-color: #475248;#} color: white;
             transition: background-color 0.3s ease;
         }
 
@@ -131,6 +130,7 @@
     {#    <p dir="rtl">تاریخ تولد: 01/01/1990</p>#}
     <a href="{% url 'account:edit_profile' user.id %}" class="edit-button">ویرایش اطلاعات</a>
     <a href="{% url 'account:change_password' %}" class="edit-button">تغییر گذرواژه</a>
+    <a  style="background-color: red" href="{% url 'account:delete_account' user.id %}" class="edit-button">حدف حساب کاربری</a>
 
 </div>
 </body>

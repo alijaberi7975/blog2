@@ -1,7 +1,7 @@
 from django.urls import path
 from account.views import LoginView, LogoutView, RegisterView, PasswordResetView, PasswordResetDoneView, \
     PasswordResetConfirmView, PasswordResetCompleteView, Profile, AddArticle, UserArticleList, EssayWriterForm, \
-    EditArticle, DeleteArticle, EditProfile, PasswordChange, FavoriteArticleList
+    EditArticle, DeleteArticle, EditProfile, PasswordChange, FavoriteArticleList, DeleteAccount
 from django.contrib.auth import views as auth_views
 
 app_name = 'account'
@@ -24,4 +24,5 @@ urlpatterns = [
     path('editprofile/<int:pk>', EditProfile.as_view(), name='edit_profile'),
     path('change_password', PasswordChange.as_view(), name='change_password'),
     path('favoritearticle', FavoriteArticleList.as_view(), name='favorite_article'),
+    path('deleteaccount/<int:pk>', DeleteAccount.as_view(), name='delete_account'),
 ]

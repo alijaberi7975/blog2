@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete user</title>
+    <style>
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        body {
+            background-image: url('{% static 'img/home-bg.jpg' %}');
+            background-size: cover;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirmation-form {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            color: white;
+            width: 80%; /* Adjust the width as needed */
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            color: #ffffff;
+        }
+
+        .verification-code-input {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .verification-code-input input {
+            width: 60%; /* Adjust the width as needed */
+            height: 40px; /* Adjust the height as needed */
+            font-size: 24px; /* Adjust the font size as needed */
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-left: 70px;
+        }
+
+        .countdown-timer {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .resend-button {
+            color: #5cb85c;
+            cursor: pointer;
+            text-decoration: underline;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .resend-button:hover {
+            text-decoration: none;
+        }
+
+        .confirmation-buttons {
+            margin-top: 20px;
+        }
+
+        .confirm-button, .cancel-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .confirm-button {
+            background-color: #5cb85c;
+            color: #fff;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+        }
+
+        .cancel-button {
+            background-color: #d9534f;
+            color: #fff;
+            font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+        }
+
+        .confirm-button:disabled, .resend-button:disabled {
+            background-color: #dddddd;
+            color: #666666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="confirmation-form">
+    <h2> تائیدیه حذف کاربر </h2>
+
+    <form id="deleteForm" action="{% url 'account:delete_account' user.id %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="user_id" value="{{ user.id }}">
+        <input type="hidden" name="token" value="{{ token }}">
+
+        {% if massage %}
+            <p>{{ massage }}</p>
+        {% endif %}
+        <div class="verification-code-input">
+            <input placeholder="کد دریافتی" type="text" name="verification_code" pattern="[0-9]*" inputmode="numeric"
+                   maxlength="6">
+        </div>
+
+        <div class="countdown-timer" id="countdown"></div>
+
+        <div class="confirmation-buttons">
+            <button type="submit" name="remove" class="confirm-button">حذف</button>
+            <button type="submit" name="cancel" class="cancel-button">خیر</button>
+        </div>
+
+        <div class="resend-button" id="resendBtn" onclick="resendCode()">
+            <form id="deleteForm" action="{% url 'account:delete_account' user.id %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                <div class="confirmation-buttons">
+                    <button style="background-color: #2e6da4" type="submit" name="confirm" class="confirm-button">ارسال مجدد کد</button>
+                </div>
+            </form>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const verificationCodeInput = document.querySelector('input[name="verification_code"]');
+
+        verificationCodeInput.addEventListener("input", function (event) {
+            const inputValue = event.target.value.replace(/\D/g, ''); // حذف همه‌ی کاراکترهای غیر عددی
+            const formattedValue = inputValue.replace(/(\d{6})(?=\d)/g, '$1 '); // افزودن فاصله به هر سه رقم به جز آخری
+
+            event.target.value = formattedValue.trim(); // حذف فاصله اضافی از ابتدا و انتها
+        });
+    });
+
+    function startCountdown(duration, display, resendBtn) {
+        let timer = duration, minutes, seconds;
+
+        const countdownInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(countdownInterval);
+                resendBtn.style.display = 'inline-block';
+            }
+        }, 1000);
+    }
+
+    // تابع برای ارسال مجدد کد
+    function resendCode(resendBtn) {
+        resendBtn.style.display = 'none';
+        let twoMinutes = 60 * 2,
+            display = document.querySelector('#countdown');
+        startCountdown(twoMinutes, display, resendBtn);
+    }
+
+    window.onload = function () {
+        let twoMinutes = 60 * 2,
+            display = document.querySelector('#countdown'),
+            resendBtn = document.getElementById('resendBtn');
+
+        startCountdown(twoMinutes, display, resendBtn);
+    };
+</script>
+
+</body>
+</html>

@@ -1,5 +1,4 @@
-import time
-
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
@@ -72,3 +71,20 @@ class RequestAnArticle(models.Model):
     class Meta:
         verbose_name = ' درخواست نوسیندگی'
         verbose_name_plural = " درخواست ها"
+
+
+class VerificationCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=6, unique=True)
+    expiration_time = models.DateTimeField()
+    token = models.CharField(max_length=20)
+
+    def is_expired(self):
+        return timezone.now() > self.expiration_time
+
+    def __str__(self):
+        return self.user.email + " - " + self.code
+
+    class Meta:
+        verbose_name = "رمز تاییدیه "
+        verbose_name_plural = "رمزهای تاییدیه"

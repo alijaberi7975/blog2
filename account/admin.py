@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from account.models import User, RequestAnArticle
+from account.models import User, RequestAnArticle, VerificationCode
 from account.form import UserChangeForm, UserCreationForm
 from article.models import FavoriteArticle
 
@@ -40,6 +40,8 @@ admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 
 admin.site.register(RequestAnArticle)
+
+admin.site.register(VerificationCode)
 
 
 
