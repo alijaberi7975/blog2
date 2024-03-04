@@ -276,7 +276,7 @@ class DeleteAccount(LoginRequiredMixin, View):
                                                 token=token)
             verification_obj.save()
 
-            # ارسال کد تأیید و توکن از طریق ایمیل
+            # ارسال کد تأیید  از طریق ایمیل
             subject = 'کد تأیید حذف حساب کاربری'
             message = f'کاربر گرامی، کد تائیدیه حذف حساب کاربری شما: {verification_code}'
             from_email = 'alijaberi279@gmail.com'  # آدرس ایمیل خود را وارد کنید
