@@ -289,7 +289,7 @@ class DeleteAccount(LoginRequiredMixin, View):
 
         elif 'remove' in request.POST:
             user = request.user
-            code = code = request.POST.get('verification_code')
+            code = request.POST.get('verification_code')
             verification = VerificationCode.objects.filter(user=request.user, token=request.POST.get('token')).first()
             if code == verification.code:
                 user.delete()
