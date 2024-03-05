@@ -101,7 +101,7 @@ class Post(View):
 
 class About(View):
     def get(self, request):
-        Me = AboutMe.objects.all().last()
+        Me = AboutMe.objects.filter(active=True).first()
         return render(request, 'about.html', {'me': Me})
 
 

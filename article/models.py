@@ -57,6 +57,7 @@ class AboutMe(models.Model):
     description = models.TextField(verbose_name='توضیحات بیشتر')
     email = models.EmailField(verbose_name="ایمیل")
     phone = models.CharField(max_length=13, verbose_name="تلفن")
+    active = models.BooleanField(default=False, verbose_name="وضعیت")
 
     def __str__(self):
         return self.name
@@ -67,11 +68,12 @@ class AboutMe(models.Model):
 
 
 class ContactUs(models.Model):
-    Name = models.CharField(max_length=30)
-    email = models.EmailField()
-    phone = models.CharField(max_length=11)
-    body = models.TextField()
+    Name = models.CharField(max_length=30, verbose_name='نام')
+    email = models.EmailField( verbose_name='ایمیل')
+    phone = models.CharField(max_length=11, verbose_name='شماره تلفن')
+    body = models.TextField( verbose_name='متن درخواست')
     created = models.DateTimeField(auto_now_add=True)
+    checked = models.BooleanField(default=False, verbose_name='بررسی شده')
 
     def __str__(self):
         return f'{self.Name} , {self.phone}'

@@ -21,8 +21,8 @@ urlpatterns = [
     path('EssayWriter', EssayWriterForm.as_view(), name='EssayWriter'),
     path('editarticle/<int:pk>', EditArticle.as_view(), name='edit_article'),
     path('deletearticle/<int:pk>', DeleteArticle.as_view(), name='delete_article'),
-    path('editprofile/<int:pk>', EditProfile.as_view(), name='edit_profile'),
+    path('editprofile', EditProfile.as_view(), name='edit_profile'),
     path('change_password', PasswordChange.as_view(), name='change_password'),
     path('favoritearticle', FavoriteArticleList.as_view(), name='favorite_article'),
-    path('deleteaccount/<int:pk>', DeleteAccount.as_view(), name='delete_account'),
+    path('deleteaccount', DeleteAccount.as_view(), name='delete_account'),
 ]

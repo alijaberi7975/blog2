@@ -128,9 +128,9 @@
     <h2>نام کاربری: {{ user.full_name }}</h2>
     <p>ایمیل: {{ user.email }}</p>
     {#    <p dir="rtl">تاریخ تولد: 01/01/1990</p>#}
-    <a href="{% url 'account:edit_profile' user.id %}" class="edit-button">ویرایش اطلاعات</a>
+    <a href="{% url 'account:edit_profile' %}" class="edit-button">ویرایش اطلاعات</a>
     <a href="{% url 'account:change_password' %}" class="edit-button">تغییر گذرواژه</a>
-    <a  style="background-color: red" href="{% url 'account:delete_account' user.id %}" class="edit-button">حدف حساب کاربری</a>
+    <a  style="background-color: red" href="{% url 'account:delete_account'%}" class="edit-button">حدف حساب کاربری</a>
 
 </div>
 </body>

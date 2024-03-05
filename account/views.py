@@ -1,23 +1,19 @@
-import random
-import string
-
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, \
     PasswordResetCompleteView, PasswordChangeView
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView
 from account.form import RegisterForm, AddArticleForm, EditProfileForm, EditArticleForm
 from account.models import User, RequestAnArticle, VerificationCode
 from article.models import Article, FavoriteArticle
-import uuid
 from django.utils import timezone
 from django.core.mail import send_mail
+import random
+import string
 
 
 # -----------------------------------------------------------------------------
@@ -116,20 +112,20 @@ class Profile(LoginRequiredMixin, View):
 
 
 class EditProfile(LoginRequiredMixin, View):
-    def get(self, request, pk):
+    def get(self, request):
         user = request.user
         form = EditProfileForm(instance=user)
-        return render(request, 'account/Edit_Profie.html', {'form': form, 'user': user})
+        return render(request, 'account/Edit_Profile.html', {'form': form, 'user': user})
 
-    def post(self, request, pk):
-        user = User.objects.get(id=pk)
+    def post(self, request):
+        user = request.user
         form = EditProfileForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
             return redirect('account:profile')
         else:
             form = EditProfileForm(instance=user)
-            return render(request, 'account/Edit_Profie.html', {'form': form})
+            return render(request, 'account/Edit_Profile.html', {'form': form})
 
 
 # --------------------------------------------------------------------------
@@ -170,7 +166,7 @@ class EditArticle(LoginRequiredMixin, View):
             form = EditArticleForm(instance=article)
             return render(request, 'account/Edir_Article.html', {'form': form, 'article': article})
         else:
-            return render(request, 'account/curbing.html')
+            return render(request, 'account/Inaccessibility.html')
 
     def post(self, request, pk):
         article = get_object_or_404(Article, id=pk)
@@ -193,9 +189,9 @@ class DeleteArticle(LoginRequiredMixin, View):
     def get(self, request, pk):
         article = Article.objects.filter(id=pk).first()
         if article and article.author == request.user:
-            return render(request, 'account/Confrim_Delete_Article.html', {'article': article})
+            return render(request, 'account/Confirm_Delete_Article.html', {'article': article})
         else:
-            return render(request, 'account/curbing.html')
+            return render(request, 'account/Inaccessibility.html')
 
     def post(self, request, pk):
         article = Article.objects.get(id=pk)
@@ -253,42 +249,37 @@ class EssayWriterForm(LoginRequiredMixin, View):
 
 
 class DeleteAccount(LoginRequiredMixin, View):
-    def get(self, request, pk):
+    def get(self, request):
         user = request.user
         return render(request, 'account/Delete_User.html', {'user': user})
 
-    def post(self, request, pk):
-        user = User.objects.get(id=pk)
-
+    def post(self, request):
+        user = request.user
         if 'confirm' in request.POST:
-            # تولید یک کد یکتا با استفاده از uuid
+            # تولید یک کد یکتا
             verification_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
-
             # ایجاد توکن 20 کاراکتری یکتا
             token = ''.join(random.choices(string.ascii_letters + string.digits, k=20))
-
             # حذف کدهای قدیمی‌تر از دیتابیس
             VerificationCode.objects.filter(expiration_time__lt=timezone.now()).delete()
-
             # ذخیره کد و توکن در مدل VerificationCode
             expiration_time = timezone.now() + timezone.timedelta(minutes=2)
             verification_obj = VerificationCode(user=user, code=verification_code, expiration_time=expiration_time,
                                                 token=token)
             verification_obj.save()
-
-            # ارسال کد تأیید  از طریق ایمیل
+            # ارسال کد تأیید از طریق ایمیل
             subject = 'کد تأیید حذف حساب کاربری'
-            message = f'کاربر گرامی، کد تائیدیه حذف حساب کاربری شما: {verification_code}'
+            message = f'کاربر گرامی شما درخواست حذف حساب کاربری خود را داده اید' \
+                      f'\n کد تائیدیه حذف حساب کاربری شما: {verification_code}'
             from_email = 'alijaberi279@gmail.com'  # آدرس ایمیل خود را وارد کنید
             to_email = user.email
             send_mail(subject, message, from_email, [to_email], fail_silently=False)
 
-            massage = "کد تایید را به ایمیل شما ارسال کردیم لطفا در هنگام انجام عملیات صفحه را رفرش نکید"
-            return render(request, 'account/Confrim_Delete_User.html',
+            massage = "کد تایید را به ایمیل شما ارسال کردیم لطفا در هنگام انجام عملیات صفحه را رفرش نکنید"
+            return render(request, 'account/Confirm_Delete_User.html',
                           {'user': user, 'token': token, "massage": massage})
 
         elif 'remove' in request.POST:
-            user = request.user
             code = request.POST.get('verification_code')
             verification = VerificationCode.objects.filter(user=request.user, token=request.POST.get('token')).first()
             if code == verification.code:
@@ -297,8 +288,10 @@ class DeleteAccount(LoginRequiredMixin, View):
                 return redirect('article:home')
             else:
                 massage = "کد وارد شده اشتباه است "
-                return render(request, 'account/Confrim_Delete_User.html',
+                return render(request, 'account/Confirm_Delete_User.html',
                               {'user': user, 'token': verification.token, "massage": massage})
+
         elif 'cancel' in request.POST:
             return redirect("account:profile")
+
         return redirect("account:profile")

@@ -34,11 +34,11 @@ class Contact(forms.ModelForm):
             raise ValidationError('شماره موبایل باید 11 عدد باشد.')
         return phone
 
-    def clean_Name(self):
-        Name = self.cleaned_data.get('Name')
-        if not Name.isalpha():
-            raise ValidationError('نام معتبر نیست.')
-        return Name
+    # def clean_Name(self):
+    #     Name = self.cleaned_data.get('Name')
+    #     if not Name.isalpha():
+    #         raise ValidationError('نام معتبر نیست.')
+    #     return Name
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

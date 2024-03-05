@@ -73,8 +73,8 @@
 
 <div class="confirmation-form">
     <h2>😢 تائیدیه حذف کاربر 😢</h2>
-    <p> آیا از حذف این مقاله حساب کاربری خود اطمینان دارید؟</p>
-    <form id="deleteForm" action="{% url 'account:delete_account' user.id %}" method="POST">
+    <p style="font-weight: bold; font-size: 16px; border-radius: 5px; padding: 2px 10px 2px 10px;"> آیا از حذف  حساب کاربری خود اطمینان دارید؟</p>
+    <form id="deleteForm" action="{% url 'account:delete_account' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="article_id" value="{{ user.id }}">
         <div class="confirmation-buttons">
@@ -82,6 +82,9 @@
             <button type="submit" name="cancel" class="cancel-button">خیر</button>
         </div>
     </form>
+    <p style="background-color: #ff3a39; font-weight: bold; font-size: 91%; border-radius: 5px; margin-top: 30px; padding: 2px 10px 2px 10px;">هشدار <br>
+         با حذف حساب کاربری خود تمامی مقالات شما در سایت نیز حذف خواهد شد
+    </p>
 
 </div>
 </body>

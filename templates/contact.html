@@ -163,7 +163,7 @@
                 <br>
                 <div id="success"></div>
                 <div class="row" align="center">
-                    <button type="button" id="submitContact" class="row control-group">ارسال</button>
+                    <button type="submit" id="submitContact" class="row control-group">ارسال</button>
 
                 </div>
             </form>
@@ -174,20 +174,18 @@
 <hr>
 <script>
     $(document).ready(function () {
-        $("#submitContact").click(function () {
-            var formData = $("#contactform").serialize();
+        $("#contactform").submit(function (event) {
+            event.preventDefault(); // جلوگیری از ارسال فرم به صورت پیش‌فرض
+
+            var formData = $(this).serialize(); // استفاده از $(this) برای ارجاع به فرم فعلی
 
             $.ajax({
                 type: "POST",
                 url: "{% url 'article:contact' %}",
                 data: formData,
                 success: function (data) {
-                    // نمایش هشدار
-                    {#$("#commentAlert").show();#}
-                    window.alert(' پیغام شما با موفقیت به دست ما رسیده و در سریعترین زمان ممکن بررسی خواهد با تشکر!')
-
-                    // پاک کردن اطلاعات فرم
-                    $("#contactform")[0].reset();
+                    window.alert('پیغام شما با موفقیت به دست ما رسیده و در سریعترین زمان ممکن بررسی خواهد شد. با تشکر!');
+                    $("#contactform")[0].reset(); // پاک کردن اطلاعات فرم
                 },
                 error: function (data) {
                     console.log('Error:', data);

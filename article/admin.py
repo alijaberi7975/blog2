@@ -22,10 +22,14 @@ class ArticleAdmin(admin.ModelAdmin):
 
 @admin.register(AboutMe)
 class AboutMeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'phone')
-    filter = ('status', 'author')
+    list_display = ('name', 'email', 'phone', 'active')
 
 
-admin.site.register(ContactUs)
+@admin.register(ContactUs)
+class ContactUsAdmin(admin.ModelAdmin):
+    list_display = ('Name', 'email', 'phone', 'checked')
+    list_filter = ('checked',)
+
+
 admin.site.register(Like)
 admin.site.register(FavoriteArticle)

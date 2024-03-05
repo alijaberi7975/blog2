@@ -109,16 +109,16 @@
 <div class="confirmation-form">
     <h2> تائیدیه حذف کاربر </h2>
 
-    <form id="deleteForm" action="{% url 'account:delete_account' user.id %}" method="POST">
+    <form id="deleteForm" action="{% url 'account:delete_account' %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="user_id" value="{{ user.id }}">
         <input type="hidden" name="token" value="{{ token }}">
 
         {% if massage %}
-            <p>{{ massage }}</p>
+            <p style="font-weight: bold; font-size: 16px">{{ massage }}</p>
         {% endif %}
         <div class="verification-code-input">
-            <input placeholder="کد دریافتی" type="text" name="verification_code" pattern="[0-9]*" inputmode="numeric"
+            <input style="font-weight: bold; font-size: 22px" placeholder="کد دریافت شده" type="text" name="verification_code" pattern="[0-9]*" inputmode="numeric"
                    maxlength="6">
         </div>
 
@@ -130,7 +130,7 @@
         </div>
 
         <div class="resend-button" id="resendBtn" onclick="resendCode()">
-            <form id="deleteForm" action="{% url 'account:delete_account' user.id %}" method="POST">
+            <form id="deleteForm" action="{% url 'account:delete_account' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="user_id" value="{{ user.id }}">
                 <div class="confirmation-buttons">
@@ -142,7 +142,6 @@
 </div>
 
 <script>
-
     document.addEventListener("DOMContentLoaded", function () {
         const verificationCodeInput = document.querySelector('input[name="verification_code"]');
 
