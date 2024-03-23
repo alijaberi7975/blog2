@@ -6,6 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.google.com/recaptcha/api.js?onload=myCallBack&render=explicit&hl=fa" async defer></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         @font-face {
@@ -102,7 +103,7 @@
             background-color: #5bc0de; /* قدرت قوی: آبی */
         }
     </style>
-    <title>فرم ورود</title>
+    <title>فرم ثبت نام</title>
 </head>
 
 <body>
@@ -156,6 +157,9 @@
                 <div class="form-group">
                     <label for="password">:تکرار رمز عبور</label>
                     {{ form.re_password }}
+                </div>
+                <div  style="margin-left: 100px" class="form-group">
+                    {{ form.captcha }}
                 </div>
                 <div class="center-btn">
                     <button type="submit" class="btn btn-primary">ایجاد حساب کاربری</button>

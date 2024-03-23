@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_social_share',
     'article.apps.ArticleConfig',
     'account.apps.AccountConfig',
+    'django_recaptcha',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,6 @@ EMAIL_HOST_USER = 'alijaberi279@gmail.com'
 EMAIL_HOST_PASSWORD = 'cdaf rtgu mkwp lrqe'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
+
+RECAPTCHA_PUBLIC_KEY = '6LerSaIpAAAAAOvJGlAlCxtL1T-fnMC-AGIpWEJ6'
+RECAPTCHA_PRIVATE_KEY = '6LerSaIpAAAAALXT7DSk-OSk7ICQGv8b-gj7cr4n'

@@ -6,6 +6,9 @@ from django.core.exceptions import ValidationError
 from account.models import User, RequestAnArticle
 from article.models import Article, Category
 
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Checkbox
+
 
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='گذرواژه', widget=forms.PasswordInput)
@@ -74,7 +77,7 @@ class UserChangeForm(forms.ModelForm):
 class RegisterForm(forms.ModelForm):
     re_password = forms.CharField(widget=forms.PasswordInput(
         attrs={"class": "form-control", "type": "password"}))
-
+    captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
     class Meta:
         model = User
         fields = ['email', 'full_name', 'password', 're_password']
